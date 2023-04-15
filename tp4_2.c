@@ -21,7 +21,9 @@ struct {
 void iniciar_arreglo_vacio(Tarea **arreglo, int cantidad);
 void cargar_tareas(Tarea **arreglo, int cantidad);
 void mostrar_tareas(Tarea **arreglo, int cantidad);
+void mostrar_unica_tarea(Tarea *tarea);
 void control_tareas(Tarea **tareas_pendientes, int cantidad, Tarea **tareas_realizadas);
+void buscar_tarea(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad);     // Función modificada conforme al apartado 7 del punto 2
 
 
 // Programa principal
@@ -52,24 +54,19 @@ int main() {
 
 
     printf("\n\n > A continuaci%cn, ingrese las tareas: \n", 162);
-
     cargar_tareas(tareas, cant_tareas);
 
-
     printf("\n\n >> A continuaci%cn, se listan las tareas previamente ingresadas para su control: \n", 162);
-
     control_tareas(tareas, cant_tareas, realizadas);
 
-
-    printf("\n\n >> A continuaci%cn, se listan las tareas pendientes: \n", 162);
-
-    mostrar_tareas(tareas, cant_tareas);
-
-
     printf("\n\n >> A continuaci%cn, se listan las tareas realizadas: \n", 162);
-
     mostrar_tareas(realizadas, cant_tareas);
 
+    printf("\n\n >> A continuaci%cn, se listan las tareas pendientes: \n", 162);
+    mostrar_tareas(tareas, cant_tareas);
+
+    printf("\n\n >> B%csqueda de tareas: \n", 163);
+    buscar_tarea(tareas, realizadas, cant_tareas);
 
     getchar();
 
@@ -130,10 +127,7 @@ void mostrar_tareas(Tarea **arreglo, int cantidad) {
 
             flag = 0;
 
-            printf("\n\t\t ------ TAREA ID: %d ------ ", arreglo[i]->tareaID);
-            printf("\n\t\t - Duraci%cn: %d minutos", 162, arreglo[i]->duracion);
-            printf("\n\t\t - Descripci%cn: %s", 162, arreglo[i]->descripcion);
-            printf("\n\n");
+            mostrar_unica_tarea(arreglo[i]);
 
         }
 
@@ -142,6 +136,15 @@ void mostrar_tareas(Tarea **arreglo, int cantidad) {
     if(flag) {
         printf("\n\t\t (!) Esta lista de tareas no tiene elementos");
     }
+}
+
+void mostrar_unica_tarea(Tarea *tarea) {
+
+    printf("\n\t\t ------ TAREA ID: %d ------ ", tarea->tareaID);
+    printf("\n\t\t - Duraci%cn: %d minutos", 162, tarea->duracion);
+    printf("\n\t\t - Descripci%cn: %s", 162, tarea->descripcion);
+    printf("\n\n");
+
 }
 
 
@@ -153,10 +156,7 @@ void control_tareas(Tarea **tareas_pendientes, int cantidad, Tarea **tareas_real
 
         int resp;
 
-        printf("\n\t\t ------ TAREA ID: %d ------ ", tareas_pendientes[i]->tareaID);
-        printf("\n\t\t - Duraci%cn: %d minutos", 162, tareas_pendientes[i]->duracion);
-        printf("\n\t\t - Descripci%cn: %s", 162, tareas_pendientes[i]->descripcion);
-        printf("\n\n");
+        mostrar_unica_tarea(tareas_pendientes[i]);
 
         printf("\t\t %cSe realiz%c esta tarea? \n\n [1] - Si \n [0] - No \n\n >> Su respuesta: ", 168, 162);
         scanf("%d", &resp);
@@ -183,5 +183,103 @@ void control_tareas(Tarea **tareas_pendientes, int cantidad, Tarea **tareas_real
         }
 
     }
+
+}
+
+void buscar_tarea(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad) {
+
+    char *buff, *search_keyword;
+
+    int flag = 0, i;
+
+    buff = (char *) malloc(sizeof(char) * 100);
+
+    printf("\n > Ingrese la palabra clave para buscar la tarea: ");
+    gets(buff);
+
+    search_keyword = (char *) malloc(sizeof(char) * (strlen(buff) + 1));
+
+    strcpy(search_keyword, buff);
+
+    strlwr(search_keyword);     // Se transforman todos los caracteres a minúsculas
+
+    free(buff);
+
+    for(i=0; i<cantidad; i++) {
+
+        if(tareas_pendientes[i] != NULL) {
+
+            flag = 1;
+
+            char *str1;     // Cadena copia
+
+            str1 = (char *) malloc(sizeof(char) * strlen(tareas_pendientes[i]->descripcion));
+
+            strcpy(str1, tareas_pendientes[i]->descripcion);
+
+            strlwr(str1);       // Se transforman todos los caracteres a minúsculas
+
+            char *punt = strstr(str1, search_keyword);
+
+            if(punt != NULL) {
+
+                printf("\n\n >> La tarea buscada se encuentra en la lista de tareas pendientes. Estos son los detalles: \n\n");
+                mostrar_unica_tarea(tareas_pendientes[i]);
+
+                break;      // Detiene el ciclo
+
+            }
+            else {
+                flag = 0;
+            }
+
+            free(str1);
+
+        }
+
+    }
+
+    for(i=0; i<cantidad; i++) {
+
+        if(tareas_realizadas[i] != NULL) {
+
+            flag = 1;
+
+            char *str1;     // Cadena copia
+
+            str1 = (char *) malloc(sizeof(char) * strlen(tareas_realizadas[i]->descripcion));
+
+            strcpy(str1, tareas_realizadas[i]->descripcion);
+
+            strlwr(str1);       // Se transforman todos los caracteres a minúsculas
+
+            char *punt = strstr(str1, search_keyword);
+
+            if(punt != NULL) {
+
+                printf("\n\n >> La tarea buscada se encuentra en la lista de tareas realizadas. Estos son los detalles: \n\n");
+                mostrar_unica_tarea(tareas_realizadas[i]);
+
+                break;      // Detiene el ciclo 
+
+            }
+            else {
+                flag = 0;
+            }
+
+            free(str1);
+
+        }
+
+    }
+
+    if(flag == 0) {
+
+        printf("\n\n >> La b%csqueda no arroj%c resultados", 163, 162);
+
+    }
+
+    free(search_keyword);
+
 
 }
