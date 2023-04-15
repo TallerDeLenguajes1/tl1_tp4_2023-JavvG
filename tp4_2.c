@@ -22,8 +22,8 @@ void iniciar_arreglo_vacio(Tarea **arreglo, int cantidad);
 void cargar_tareas(Tarea **arreglo, int cantidad);
 void mostrar_tareas(Tarea **arreglo, int cantidad);
 void mostrar_unica_tarea(Tarea *tarea);
+void mostrar_unica_tarea(Tarea *tarea);
 void control_tareas(Tarea **tareas_pendientes, int cantidad, Tarea **tareas_realizadas);
-void buscar_tarea(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad);     // Función modificada conforme al apartado 7 del punto 2
 
 
 // Programa principal
@@ -128,6 +128,7 @@ void mostrar_tareas(Tarea **arreglo, int cantidad) {
             flag = 0;
 
             mostrar_unica_tarea(arreglo[i]);
+            mostrar_unica_tarea(arreglo[i]);
 
         }
 
@@ -136,6 +137,15 @@ void mostrar_tareas(Tarea **arreglo, int cantidad) {
     if(flag) {
         printf("\n\t\t (!) Esta lista de tareas no tiene elementos");
     }
+}
+
+void mostrar_unica_tarea(Tarea *tarea) {
+
+    printf("\n\t\t ------ TAREA ID: %d ------ ", tarea->tareaID);
+    printf("\n\t\t - Duraci%cn: %d minutos", 162, tarea->duracion);
+    printf("\n\t\t - Descripci%cn: %s", 162, tarea->descripcion);
+    printf("\n\n");
+
 }
 
 void mostrar_unica_tarea(Tarea *tarea) {
@@ -156,6 +166,7 @@ void control_tareas(Tarea **tareas_pendientes, int cantidad, Tarea **tareas_real
 
         int resp;
 
+        mostrar_unica_tarea(tareas_pendientes[i]);
         mostrar_unica_tarea(tareas_pendientes[i]);
 
         printf("\t\t %cSe realiz%c esta tarea? \n\n [1] - Si \n [0] - No \n\n >> Su respuesta: ", 168, 162);
@@ -181,6 +192,56 @@ void control_tareas(Tarea **tareas_pendientes, int cantidad, Tarea **tareas_real
         else {
             tareas_realizadas[i] = NULL;
         }
+
+    }
+
+}
+
+void buscar_tarea(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad) {
+
+    int search_ID, i, flag = 0;
+
+    printf("\n > Ingrese el ID de la tarea que desea buscar: ");
+    scanf("%d", &search_ID);
+
+    while(search_ID <= 0) {
+
+        printf("\n\t (!) Los ID's son n%cmeros naturales no nulos. Ingrese nuevamente:  ", 163);
+        scanf("%d", &search_ID);
+
+    }
+
+    fflush(stdin);
+
+    for(i=0; i<cantidad; i++) {
+
+        if(tareas_pendientes[i] != NULL && tareas_pendientes[i]->tareaID == search_ID) {
+
+            flag = 1;
+
+            printf("\n\n >> La tarea ID: %d se encuentra en la lista de tareas pendientes. Estos son los detalles: \n\n", tareas_pendientes[i]->tareaID);
+            mostrar_unica_tarea(tareas_pendientes[i]);
+
+        }
+
+    }
+
+    for(i=0; i<cantidad; i++) {
+
+        if(tareas_realizadas[i] != NULL && tareas_realizadas[i]->tareaID == search_ID) {
+
+            flag = 1;
+
+            printf("\n\n >> La tarea ID: %d se encuentra en la lista de tareas realizadas. Estos son los detalles: \n\n", tareas_realizadas[i]->tareaID);
+            mostrar_unica_tarea(tareas_realizadas[i]);
+
+        }
+
+    }
+
+    if(flag == 0) {
+
+        printf("\n\n >> La b%csqueda no arroj%c resultados", 163, 162);
 
     }
 
