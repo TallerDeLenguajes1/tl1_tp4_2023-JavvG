@@ -24,13 +24,15 @@ void mostrar_tareas(Tarea **arreglo, int cantidad);
 void mostrar_unica_tarea(Tarea *tarea);
 void mostrar_unica_tarea(Tarea *tarea);
 void control_tareas(Tarea **tareas_pendientes, int cantidad, Tarea **tareas_realizadas);
+void buscar_tarea_por_ID(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad);
+void buscar_tarea_por_palabra(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad);
 
 
 // Programa principal
 
 int main() {
 
-    int cant_tareas;
+    int cant_tareas, resp;
 
     Tarea **tareas, **realizadas;
 
@@ -66,7 +68,26 @@ int main() {
     mostrar_tareas(tareas, cant_tareas);
 
     printf("\n\n >> B%csqueda de tareas: \n", 163);
-    buscar_tarea(tareas, realizadas, cant_tareas);
+    
+
+    printf("\n > %cDesea buscar tareas por ID o por palabra clave? \n [1] - Por ID \n [2] - Por palabra clave \n\n >> Su respuesta: ", 168);
+    scanf("%d", &resp);
+
+    while(resp != 1 && resp != 2) {
+
+        printf("\n\t (!) Por favor, ingrese una opci%cn v%clida: ", 162, 160);
+        scanf("%d", &resp);
+
+    }
+
+    fflush(stdin);
+
+    if(resp == 1) {
+        buscar_tarea_por_ID(tareas, realizadas, cant_tareas);
+    }
+    else {
+        buscar_tarea_por_palabra(tareas, realizadas, cant_tareas);
+    }
 
     getchar();
 
@@ -128,7 +149,6 @@ void mostrar_tareas(Tarea **arreglo, int cantidad) {
             flag = 0;
 
             mostrar_unica_tarea(arreglo[i]);
-            mostrar_unica_tarea(arreglo[i]);
 
         }
 
@@ -137,15 +157,6 @@ void mostrar_tareas(Tarea **arreglo, int cantidad) {
     if(flag) {
         printf("\n\t\t (!) Esta lista de tareas no tiene elementos");
     }
-}
-
-void mostrar_unica_tarea(Tarea *tarea) {
-
-    printf("\n\t\t ------ TAREA ID: %d ------ ", tarea->tareaID);
-    printf("\n\t\t - Duraci%cn: %d minutos", 162, tarea->duracion);
-    printf("\n\t\t - Descripci%cn: %s", 162, tarea->descripcion);
-    printf("\n\n");
-
 }
 
 void mostrar_unica_tarea(Tarea *tarea) {
@@ -166,7 +177,6 @@ void control_tareas(Tarea **tareas_pendientes, int cantidad, Tarea **tareas_real
 
         int resp;
 
-        mostrar_unica_tarea(tareas_pendientes[i]);
         mostrar_unica_tarea(tareas_pendientes[i]);
 
         printf("\t\t %cSe realiz%c esta tarea? \n\n [1] - Si \n [0] - No \n\n >> Su respuesta: ", 168, 162);
@@ -197,7 +207,7 @@ void control_tareas(Tarea **tareas_pendientes, int cantidad, Tarea **tareas_real
 
 }
 
-void buscar_tarea(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad) {
+void buscar_tarea_por_ID(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad) {
 
     int search_ID, i, flag = 0;
 
@@ -247,7 +257,7 @@ void buscar_tarea(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cant
 
 }
 
-void buscar_tarea(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad) {
+void buscar_tarea_por_palabra(Tarea **tareas_pendientes, Tarea **tareas_realizadas, int cantidad) {
 
     char *buff, *search_keyword;
 
